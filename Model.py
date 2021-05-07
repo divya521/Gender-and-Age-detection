@@ -1,3 +1,40 @@
+import os
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, CSVLogger, EarlyStopping
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, BatchNormalization, Flatten, Dense
+
+
+trainDataGen = ImageDataGenerator(horizontal_flip=True,
+                                 brightness_range=[0.2,1.0],
+                                 channel_shift_range=0.7,
+                                 rotation_range=50,
+                                 rescale=1.0/255,
+                                 zca_epsilon=1e-06,
+                                 fill_mode = 'nearest')
+
+testDataGen = ImageDataGenerator(rescale=1.0/255)
+
+trainGenerator = trainDataGen.flow_from_directory(os.path.join("Splitted_Dataset","Splitted_Dataset", "Train"),
+                                                 classes=[str(Class) for Class in range(2)],
+                                                 class_mode="binary",
+                                                 color_mode="rgb",
+                                                 target_size=(227,227),
+                                                 batch_size= 32,
+                                                 shuffle=True,)
+
+validationGenerator = testDataGen.flow_from_directory(os.path.join("Splitted_Dataset","Splitted_Dataset", "Validation"),
+                                                 classes=[str(Class) for Class in range(2)],
+                                                 class_mode="binary",
+                                                 color_mode="rgb",
+                                                 target_size=(227,227),
+                                                 batch_size= 32,
+                                                 shuffle=True,)
+
+
+
 model = tf.keras.Sequential()
 
 
